@@ -2,13 +2,14 @@
 
 node server.js
 
-# To run Frontend After this message displayed "Server running on port 4000", open
+# To run Frontend
 
 After this message displayed "Server running on port 4000", open http://localhost:4000/
 
 # Project Description
 
-AI Prompt Search
+## AI Prompt Search
+
 AI Prompt Search is a web-based application that allows users to interact with Google's Generative AI models. Users can input a prompt, and the backend communicates with the Google Generative AI API to generate AI-powered responses, which are then displayed on the frontend. The application is built using Node.js, Express.js for the backend, and plain HTML, CSS, and JavaScript for the frontend.
 
 Features
