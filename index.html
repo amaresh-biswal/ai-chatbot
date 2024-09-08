@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Prompt Search</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0f4f8;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        background-color: #ffffff;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      h1 {
+        color: #333;
+        font-size: 2em;
+        margin: 0;
+      }
+
+      .input-container {
+        margin-top: 10px;
+      }
+
+      input[type="text"] {
+        width: 300px;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+
+      input[type="text"]:focus {
+        border-color: #007bff;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      .content {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        justify-content: center; /* Center the response box horizontally */
+        align-items: flex-start; /* Align the response box at the top */
+      }
+
+      #response {
+        width: 100%; /* Ensure it takes up full width in small screens */
+        max-width: 1000px; /* Limit the max width for larger screens */
+        padding: 15px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        white-space: pre-wrap; /* Preserve whitespace */
+        text-align: left; /* Ensure text is left-aligned */
+      }
+
+      .response-header {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+
+      .bold-text {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>AI Prompt Search</h1>
+      <div class="input-container">
+        <input type="text" id="userPrompt" placeholder="Enter your prompt" />
+        <button onclick="sendPrompt()">Search</button>
+      </div>
+    </div>
+    <div class="content">
+      <div id="response"></div>
+    </div>
+
+    <script>
+      function formatResponse(text) {
+        // Convert **bold text** to <span class="bold-text">bold text</span>
+        let formattedText = text.replace(
+          /\*\*(.*?)\*\*/g,
+          '<span class="bold-text">$1</span>'
+        );
+
+        // Convert ## headers to <div class="response-header">header text</div>
+        formattedText = formattedText.replace(
+          /##\s*(.*?)(\r?\n|$)/g,
+          '<div class="response-header">$1</div>'
+        );
+
+        return formattedText;
+      }
+
+      async function sendPrompt() {
+        const prompt = document.getElementById("userPrompt").value;
+        const responseDiv = document.getElementById("response");
+        responseDiv.innerHTML = "Loading...";
+
+        try {
+          const response = await fetch("/api/search", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prompt }),
+          });
+
+          const data = await response.json();
+          const formattedResponse = formatResponse(
+            data.result || "No response from AI."
+          );
+          responseDiv.innerHTML = formattedResponse;
+        } catch (error) {
+          responseDiv.innerHTML = "Error: " + error.message;
+        }
+      }
+    </script>
+  </body>
+</html>
