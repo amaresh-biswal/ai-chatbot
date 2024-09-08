@@ -1,3 +1,7 @@
+# Install the required packages with:
+
+npm install express body-parser @google/generative-ai
+
 # To start backend
 
 node server.js
